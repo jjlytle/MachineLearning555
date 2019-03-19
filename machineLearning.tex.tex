@@ -1,0 +1,361 @@
+% set encoding to UTF-8 Unicode
+\documentclass[sigconf]{acmart}
+\bibliographystyle{acmart}
+%automatically run bibtex
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08emT\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\copyrightyear{2019}
+\acmYear{2019}
+\setcopyright{acmlicensed}
+\acmConference[UWT '19]{UWT '19: TCSS 555: Machine Learning}{Winter 2019}{Tacoma, WA}
+\acmPrice{0.00}
+\acmDOI{10.1145/1122445.1122456}
+\acmISBN{978-1-4503-9999-9/18/06}
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+\title{Predicting Malware Detection Using Machine Learning Methods}
+
+\author{Jeffrey Lytle}
+\authornote{Both authors contributed equally to this research.}
+\email{jjlytle@uw.edu}
+\orcid{1234-5678-9012}
+\author{Jason Hall}
+\authornotemark[1]
+\email{b29@uw.edu}
+\affiliation{%
+  \institution{University of Washington}
+  \streetaddress{1900 commerce st.}
+  \city{Tacoma}
+  \state{Washington}
+  \postcode{98001}
+}
+
+\begin{abstract}
+ The goal of this study is to find an optimal solution using machine learning methods to develop a model that will efficiently predict malware detection given parameters described later. The models described in this study were trained on a dataset created by Microsoft.  
+\end{abstract}
+
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10002978.10002997.10002998</concept_id>
+<concept_desc>Security and privacy~Malware and its mitigation</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10010147.10010257</concept_id>
+<concept_desc>Computing methodologies~Machine learning</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10010147.10010341</concept_id>
+<concept_desc>Computing methodologies~Modeling and simulation</concept_desc>
+<concept_significance>400</concept_significance>
+</concept>
+<concept>
+<concept_id>10002944.10011122.10002946</concept_id>
+<concept_desc>General and reference~Reference works</concept_desc>
+<concept_significance>100</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[300]{Security and privacy~Malware and its mitigation}
+\ccsdesc[500]{Computing methodologies~Machine learning}
+\ccsdesc[400]{Computing methodologies~Modeling and simulation}
+\ccsdesc[100]{General and reference~Reference works}
+
+
+\keywords{Malware, Machine Learning, Support Vector Machines (SVM), Random Forest, Logistic Regression, Malware Detection, Microsoft, Deep Learning, Comma Separated Value (CSV)
+}
+
+\begin{teaserfigure}
+  \includegraphics[width=\textwidth]{malware}
+  \caption{Malware is all malicious software.}
+  \label{fig:teaser}
+\end{teaserfigure}
+
+%Everything above here is for the title bar Main text below
+\maketitle
+
+\section{Introduction}
+ The problem this study attempts to address is the problem of malware on computers. What is malware? Malware is any software intentionally designed to cause damage to a computer, server, client, or computer network. \cite{cite-Moir:2009}. Malware is actually short for 'Malicious Software'. The problem is how can one prevent computers from ever acquiring these programs. What makes a computer vulnerable to acquiring malware? This study looks at a data set of 8,029,335 data points each with 83 features. \textit{Some unknown number of data points were kept secret for testing.} Each data point in this dataset represents a physical computer and whether or not this computer has had a malware detection. The features of this dataset represent the states of a physical computer, such as how much RAM it has, or whether or not automatic updates were on or off. As well as details about which OS and OS build were installed on the computer. With these and the other ~80 features we attempted to build a machine learning model that could predict with some accuracy as to whether or not the machine in question is predicted to be infected with malware. This study details the methods and experiments carried out to build an optimal model for this problem of detecting malware.
+
+\section{Background}
+This study was used as an introduction to machine learning in the \textit{University of Washington Tacoma's (UWT) Winter 2019 TCSS 555 Machine Learning class.} The data was broken into two sections, one given to the students and one reserved for testing and grading by the professor. The dataset given to the students was around 8 million rows and the test dataset size was unknown. The testing was also resource constrained. The testing was done on a x84\_64 AMD Ryzen Threadripper 1950X 16-Core Processor at 3393.566 MHz using a virtualized Linux environment using the KVM hypervisor. With 8167936 KB of memory, but only 7584916 KB of memory was available to the processes. The L1\_d cache was 32K, L1\_i cache was 64K, L2 was 512K, and L3 was 32768K bytes. This CPU has 4 cores with one thread per core. The resource constraints, unknown data, and unknown data size were major factors in the data preprocessing as well as model training. Model training itself was unconstrained and models could be built on any compatible system and then uploaded to the test system described above. 
+ 
+\section{Dataset and Metrics}
+This dataset was provided by Microsoft for their 2015 Malware Classification Challenge (BIG 2015). The dataset contains state information about physical computers. The target feature we are most interested is `HasDetection' this binary value indicates whether the physical computer has detected some form of malicious software when in its current state. We will use the state information contained in the dataset to train models to predict the target feature 'HasDetection'. The Metric we will used to optimize the models is Area Under the Curve (AUC) Receiver Operating Characteristics (ROC) curve. AUC - ROC curve is a performance measurement for classification problem at various thresholds settings. ROC is a probability curve and AUC represents degree or measure of separability. It tells how much model is capable of distinguishing between classes. Higher the AUC, better the model is at predicting 0s as 0s and 1s as 1s. \cite{AUC:2018} The ROC curve is a plot of True Positive Rate (TPR) vs. the False Positive Rate (FPR). Thus AUC is the area under the TPR vs. FPR curve. Most models were trained for accuracy in predicting `HasDetection' then compared by their average AUC.
+
+ \begin{figure}
+  \includegraphics[width=\linewidth]{example-ROC.PNG}
+  \caption{Example Receiver Operating Characteristics Curve.}
+  \label{fig:roc}
+\end{figure}
+
+\begin{equation}
+\text { TPR / Recall / Sensitivity }=\frac{\text { TP }}{\mathrm{TP}+\mathrm{FN}}
+\end{equation}
+
+\begin{equation}
+\text { Specificity }=\frac{\text { TN }}{\mathrm{TN}+\mathrm{FP}}
+\end{equation}
+
+\begin{equation}
+\begin{aligned} \mathrm{FPR} &=1-\text { Specificity } \\ &=\frac{\mathrm{FP}}{\mathrm{TN}+\mathrm{FP}} \end{aligned}
+\end{equation}
+ 
+\section{Data Analysis}:
+For this study we were given a dataset in the form of a .csv file. This data was collected by Microsoft and contains many statistics about individual physical computers. Like in all machine learning studies, looking at the dataset and attempting to gain a general understanding of the information it contains. 
+\subsection{Feature Selection Models}
+This dataset contains some 80 odd features. The first thing we did was look through the data and try to obtain a general understanding of the information contained in our dataset. Also looking at what malware is and how it affects a computer. We looked at the features and used our intuition as to whether or not this feature would be useful in detecting malware. We choose a list of ten features we though would contain the most useful information for detecting malware. 
+% so we start with a simple list
+\subsubsection{Initial Tests}
+We choose this smaller set of features to allow models to be trained quickly so that when setting up the training and testing environment we would have no issue with the testing's resource constraints. This would allow us to get an initial baseline. This initial set will be added to and subtracted from to form a final list of features. This initial list was used to set up the testing and training environment quickly so we could get to iterating
+\begin{center}
+\textbf{`Firewall':}\\
+    \textbf{\textit{Datatype: }}int8\\
+    \textbf{\textit{Definition: }}Bit is set if windows firewall is enabled. \\
+    \textbf{\textit{Intuition: }}Computers are much more vulnerable to malware with the firewall off.\\
+    \vspace{5mm}
+    \textbf{`IsProtected'):\\}
+    \textbf{\textit{Datatype: }}float16\\
+    \textbf{\textit{Definition: }}True if active up-to-date antivirus product, False if no active AV product, null no AV. \\
+    \textbf{\textit{Intuition: }}Up-to-date antivirus definitions should play a major role in whether a system is vulnerable to malware infection.\\
+    \vspace{5mm}
+    \textbf{`Census\_OSWUAutoUpdateOptionsName':\\}
+    \textbf{\textit{Datatype: }}int8\\
+    \textbf{\textit{Definition: }}Friendly name of the WindowsUpdate auto-update settings on the machine. \\
+    \textbf{\textit{Intuition: }}Computers are much more vulnerable to malware with the auto update options switched off.\\
+    \vspace{5mm}
+    \textbf{`Census\_GenuineStateName':\\}
+    \textbf{\textit{Datatype: }}categorical\\
+    \textbf{\textit{Definition: }}Category is set to 0 if the installed copy of windows was a genuine copy of windows another number otherwise.\\
+    \textbf{\textit{Intuition: }}Non genuine copies of windows typically have malware installed on them from the start.\\
+    \vspace{5mm}
+    \textbf{`Census\_ActivationChannel':\\}
+    \textbf{\textit{Datatype: }}categorical\\
+    \textbf{\textit{Definition: }}Retail license key or Volume license key for a machine. \\
+    \textbf{\textit{Intuition: }}A volume license key means a professional installed the OS where a retail license means a non professional installed the OS, This may introduce a line of attack due to default or improper settings.\\
+    \vspace{5mm}
+    \textbf{`Census\_IsAlwaysOnAlwaysConnectedCapable':\\}
+    \textbf{\textit{Datatype: }}float16\\
+    \textbf{\textit{Definition: }}Retrieves information about whether the battery enables the device to be AlwaysOnAlwaysConnected. \\
+    \textbf{\textit{Intuition: }}This setting allows the computer to connect to any available WiFi even when closed or asleep. If this is set incorrectly it is a very good attack vector for malware.\\
+    \vspace{5mm}
+    \textbf{`DefaultBrowsersIdentifier':\\}
+    \textbf{\textit{Datatype: }}float16\\
+    \textbf{\textit{Definition:}}ID for the machine’s default browser.\\
+    \textbf{\textit{Intuition: }}An old or out-of-date browser could be a potential attack vector for malware.\\
+    \vspace{5mm}
+    \textbf{`ProductName':\\}
+    \textbf{\textit{Datatype: }}category\\
+    \textbf{\textit{Definition: }}Defender state information e.g.  win8defender. meaning name of installed antivirus\\
+    \textbf{\textit{Intuition: }}The installed antivirus should have a major impact as to whether a system is infected with malware, as not all antivirus programs are equal in how they defend against malware.\\
+    \vspace{5mm}
+    \textbf{`Platform':\\}
+    \textbf{\textit{Datatype: }}category\\
+    \textbf{\textit{Definition: }} Calculates platform name. This is a friendly name for the installed OS.\\
+    \textbf{\textit{Intuition: }}Every OS deals with program permission and instillation different, Linux typical has very low occurrences of malware where Windows XP is famous for its malware infections\\
+    \vspace{5mm}
+    \textbf{`SkuEdition':\\}
+    \textbf{\textit{Datatype: }}category\\
+    \textbf{\textit{Definition: }}The ’SKU-Edition’ is a string value that is in one of three classes of results. \\
+    \textbf{\textit{Intuition: }}This specifies if the OS edition Home, Pro, Enterprise, Education or invalid (OS other than Windows). Malware may attack Enterprise and Education as large business regularly pay off ransom wear attacks\\
+    \vspace{5mm}
+    \textbf{`SMode':\\}
+    \textbf{\textit{Datatype: }}int8\\
+    \textbf{\textit{Definition: }}S Mode’, where only specific apps can be installed \\
+    \textbf{\textit{Intuition: }}S mode of safe mode is a mode windows has where only digitally signed apps can be signed. This added security should make it harder for malware to install itself\\
+    \vspace{5mm}
+\end{center}
+% re-encoded the data
+After we got a good handle on what the data contained and why it would be used to detect malware. We moved on to looking at the data mathematically. 
+\subsubsection{Re-encoding to Reduce Memory Footprint}
+This is where we hit our first hurdle. Due to the resource constraints imposed on this problem we needed to reduce the memory footprint of the information contained in the dataset. We achieved this by re-encoding the default datatypes passed to the training model and testing environment. In the dataset some binary values are encoded as floats, so 1, 0 were encoded as 1.0, 0.0. this takes up a lot of memory and provides no extra information. We used These are the simple rules re-encoding the data, so that it would take up less physical memory with out losing any information. The simple rules we followed were
+\begin{itemize}
+\item python's 'object'$\,\to\,$pandas category
+\item all Binary values$\,\to\,$int8
+\item Binary values with missing values$\,\to\,$float16 (int8 does not understand NaN).
+\item 64 bits encoding$\,\to\,$float32, or float16 if possible
+\end{itemize}
+
+This re-encoding of the data allowed for quicker manipulations to the structure of the data and allowed for the model to be trained on the entire dataset when this, and other tricks were used (discussed later). 
+ % then we look at Pearsons correlations
+ \subsubsection{Using the Pearson's Correlation to Select Features}
+ The next thing we did was produce a correlation matrix (see appendix [1] for full size). 
+ \begin{figure}
+  \includegraphics[width=\linewidth]{correlation.PNG}
+  \caption{Pearson Correlation Matrix}
+  \label{fig:matrix}
+\end{figure}
+
+Figure \ref{fig:matrix} This matrix was made using Pearson's correlation. 
+
+\begin{equation}
+r=\frac{\sum(x-\overline{x})(y-\overline{y})}{\sqrt{\sum(x-\overline{x})^{2} \sum(y-\overline{y})^{2}}}
+\end{equation}
+
+ The matrix shows the correlation of every feature with every other feature in the dataset. This allowed us to see which features where highly correlated with the data and which features were highly correlated with each other. 
+% drops do to correlation 
+ This allowed us to quickly decide to drop columns that were highly correlated with each other. This is because features that equal ~1 using Pearson's contain the same information, so when training models this feature will provide no new information while taking up precious memory in our resource constrained system. The columns we decided to drop do too high correlation with each other were.
+
+\begin{center}
+\textbf{`Census\_OSBuildNumber':}\\
+    \textbf{\textit{Feature Removed: }}`OSBuild'\\
+    \textbf{\textit{Definitions:}} Both OSBuild and Census\_OSBuildNumber represent the build of the OS, but OSBuildNumber is slightly more specific so OSBuild feature was removed.\\
+    \textbf{\textit{Correlation: }}94\%.\\
+    \vspace{5mm}
+\textbf{`IsSxsPassiveMode':}\\
+    \textbf{\textit{Feature Removed: }}`RtpStateBitfield'\\
+    \textbf{\textit{Definitions:}} IsSxsPassiveMode is set if your firewall is set to active or passive mode. RtpStateBitfield states whether your firewall has realtime protection enabled or disabled, Real time protection sets your firewall from active to passive modes so these bits should always be in sync. The correlation is not 100\% due to some missing values.\\
+    \textbf{\textit{Correlation: }}91\%.\\
+    \vspace{5mm}
+\textbf{`Census\_OSInstallLanguageIdentifier':}\\
+    \textbf{\textit{Feature Removed: }}`Census\_OSUILocaleIdentifier'\\
+    \textbf{\textit{Definitions:}} Census\_OSInstallLanguageIdentifier is used Census\_OSUILocaleIdentifier by default and are almost never changed. \\
+    \textbf{\textit{Correlation: }}99\%.\\
+    \vspace{5mm}
+\textbf{`Census\_InternalPrimaryDiagonalDisplaySizeInInches':}\\
+    \textbf{\textit{Feature Removed: }}`Census\_InternalPrimaryDisplayResolutionHorizontal' and \\
+    `Census\_InternalPrimaryDisplayResolutionHorizontal'
+    \textbf{\textit{Definitions:}} Although not highly correlated using reason one could deduce that A screens horizontal and vertical resolution is correlated with its diagonal display size, therefore we would be using memory in our machine learning model to deduce if a screens aspect ration makes it vulnerable to malware. Which is clearly not true.\\
+    \textbf{\textit{Correlation: }}80\%.\\
+    \vspace{5mm}
+\textbf{`Census\_SystemVolumeTotalCapacity':}\\
+    \textbf{\textit{Feature Removed: }}`Census\_PrimaryDiskTotalCapacity'\\
+    \textbf{\textit{Definitions:}} Although not highly correlated one could reason that since Census\_PrimaryDiskTotalCapacity  is contained in Census\_SystemVolumeTotalCapacity, so no new information would be found because the primary disk capacity is part of the total system capacity. For this reason it was removed\\
+    \textbf{\textit{Correlation: }}79\%.\\
+    \vspace{5mm}
+\end{center}
+
+Using this same correlation matrix we can see how each feature is correlated to our target `HasDetection'. Which is the feature we are trying to predict. `HasDetection' indicates that the physical computer this datapoint represents has detected a known malicious program in the past. We decided to keep the top X most highly positively and negatively correlated features. Those features were.
+
+\begin{center}
+\begin{tabular}{ |c|c| } 
+ \hline
+ Feature & Pearson's correlation \\
+  \hline\hline
+ AVProductsInstalled & -0.103090 \\
+  \hline
+Census\_IsPenCapable & -0.078027 \\
+ \hline
+Census\_FirmwareVersionIdentifier & -0.071773 \\
+ \hline
+Census\_IsTouchEnabled & -0.063520 \\
+ \hline
+AVProductsEnabled & -0.062365 \\
+ \hline
+Census\_OSUILocaleIdentifier & -0.058779 \\
+ \hline
+Census\_ProcessorCoreCoun & 0.072079 \\
+ \hline
+Census\_PrimaryDiskTotalCapacity & 0.082228 \\
+ \hline
+Census\_ProcessorModelIdentifier & 0.093179 \\
+ \hline
+AVProductStatesIdentifier & 0.098968 \\
+ \hline
+Census\_ProcessorManufacturerIdentifier & 0.099886 \\
+ \hline
+\end{tabular}
+\end{center}
+\vspace{3mm}
+
+The next data preprocessing task was to find and remove highly skewed columns, as well as empty columns and columns that contained unique values for every entry. We removed data where either all entries were equal or very close to equal. The dataframes .skew() function was used to obtain the Pearon's skew of the columns which defines skew as the mean minus the mode divide by the standard deviation. Which means any column who's skew is zero or very close to it contains mostly the same values. We also used the pandas dataframe's .value\_count to obtain the number of unique values in a column. Any column who's value count was equal to the size of the dataframe where removed. This means that every value in the column was unique and thus could provide no value to our machine learning model as well as take up  constrained memory. These are the features that were removed using this process.
+
+\begin{center}
+\begin{tabular}{ |c|c|c| } 
+ \hline
+ Feature & Reason Dropped \\
+ \hline\hline
+IsBeta & All entries are equal \\
+AutoSampleOptIn & All entries are equal \\
+Census\_IsFlightingInternal & over 95\% missing \\
+Census\_IsFlightsDisabled & All entries are equal \\
+Census\_IsWIMBootEnabled & over 95\% missing \\
+Census\_ThresholdOptInv & All entries are equal \\
+Census\_IsFlightsDisabled & All entries are equal \\
+AutoSampleOptIn & All entries are equal \\
+CityIdentifier & highly skewed \\ 
+ \hline
+\end{tabular}
+\end{center}
+\vspace{3mm}
+
+This left us with a final list of 27 features. containing mostly binary features, a few categorical features, and a couple continuous value features. The final feature list started with the 10 most highly correlated features plus the 10 features that would logically pertain to malware detection. This left us with 20 columns. To this initial list we continued to add features starting with the next most highly correlated (excluding those mentioned above as excluded) until we reached the limit of our testing environments resource constraints. This is the final resource list we trained our models with. 
+
+\begin{itemize}
+\item `AVProductsInstalled' 
+\item `Census\_IsAlwaysOnAlwaysConnectedCapable',
+\item `DefaultBrowsersIdentifier',
+\item `ProductName',
+\item `Platform',
+\item `SkuEdition',
+\item `IsProtected',
+\item `Firewall',
+\item `Wdft\_IsGamer',
+\item `Census\_OSWUAutoUpdateOptionsName',
+\item `Census\_GenuineStateName',
+\item `Census\_ActivationChannel',
+\item `Census\_ProcessorCoreCount',                               
+\item `Census\_TotalPhysicalRAM',                             
+\item `AVProductStatesIdentifier',
+\item `Census\_IsVirtualDevice',
+\item `Census\_IsTouchEnabled',
+\item `AVProductsEnabled',
+\item `SMode',
+\item `Wdft\_RegionIdentifier',
+\item `IsSxsPassiveMode',
+\item `Census\_IsPenCapable',
+\item `OsSuite',
+\item `Census\_FirmwareManufaturerIdentifier',
+\item `Census\_FirmwareVersionIdentifier',,
+\item `UacLuaenable',
+\item `Census\_OSBuildRevision',
+\end{itemize}
+
+\section{Methodology}
+Now that we have a handle on the data and removed all irrelevant and extraneous data we will talk about our model training methodology.  We chose to use a typical machine learning model selection methodology start with linear regression. Then check results and move to logistic regression check results. Then try random forest. These failing then begin trying more exotic methods. Our initial test did fail to produce good results so we attempted SVM and Deep learning methods due to some research articles into the dataset that was provided. Before we could train our models we again were faced with memory constraints.
+\subsection{Dealing With Memory Constraints}
+When training a model it is best to use as much data as possible. Due to the testing environment all data manipulation done to this the data must also be replicated in the testing environment. This was due to the test environment accepting only a serialized python class as an input. Since only the class is saved all manipulation to the data done before training the model must also be done to the test data. Due to the fact that model training was not constrained and model testing was. We settled on the process described below to allow our models to be trained on all the data. Even when the testing environment could not handle the data manipulations needed for the trained models. First we retrieved the parameters of our test system, such as OS used, Hypervisor used, and other necessary parameters. With these we created a duplicate virtualized environment, but with much more memory available. We then use this system to train the models and save the serialized class. This class is sent to the resource constrained testing environment. The test system then loads the serialized class and passes it a test-data set in a pandas dataframe and call the classes predict method. The output of this method is a list object of malware predictions for the test-data this is then compared with the ground truth of the malware predictions to calculate the AUC-ROC graph. We solved the problem of duplicating the test-data transformations to match the model by having the predict method retrieve the entire data frame re-encode it using these rule. 
+\begin{itemize}
+\item python's 'object'$\,\to\,$pandas category
+\item all Binary values$\,\to\,$int8
+\item Binary values with missing values$\,\to\,$float16 (int8 does not understand NaN).
+\item 64 bits encoding$\,\to\,$float32, or float16 if possible
+\end{itemize}
+As mentioned above then writing the entire file out to a .csv file. Then reading the .csv file back, but in chucks of 1000 datapoints a piece. The predict method would then do the data transformations and predictions 1000 datapoints at a time keeping the entire code well within the memory limits of the test system. Next we will discuss the data transformation we choose to do before training the data.
+\subsection{Dealing with missing values}
+Due to the high number of missing values contained in the data set, and that most variables were either binary or of a few categories we decided to implement an the pandas imputer class to replace the missing values, such as unknown, blank, or NaN in the dataset with the most frequent value found in the column.
+\subsection{Dealing with Categorical values}
+Instead of decided to replace categorical variables with numerical values. We instead opted to to use a method known as one-hot-encoding. a process where each category in a column is given a new column of its own where the data is 0 if the category was different to the new or 1 if the category in the original column matched value of the new column 
+\subsection{Normalizing}
+
+\subsection{Models Used}
+\subsubsection{Logistic Regression}
+\subsubsection{Random Forest}
+\subsubsection{Support Vector Machines}
+\subsubsection{DeepLearning}
+
+\section{Results}
+
+\section{Conclusions}
+as does not charge per device or transaction so the cost for scaling only increase in the extra a.
+
+\section{Future Work}
+
+\bibliography{main.bib}
+
+\subsection{Appendix}
+
+\label{lytle:correlation}
+\includegraphics[scale=0.2]{correlation.PNG}
+
+% that's all folks
+
+\end{document}
+
+

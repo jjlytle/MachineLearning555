@@ -1,0 +1,104 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: machineLearning.aux
+The style file: acmart.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: main.bib
+Warning--entry type for "random:2019" isn't style-file defined
+--line 11 of file main.bib
+Warning--entry type for "logic:2019" isn't style-file defined
+--line 18 of file main.bib
+Warning--entry type for "order:2019" isn't style-file defined
+--line 25 of file main.bib
+Warning--entry type for "AUC:2018" isn't style-file defined
+--line 33 of file main.bib
+Warning--entry type for "cite-Moir:2009" isn't style-file defined
+--line 47 of file main.bib
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--no key, author in cite-Moir:2009
+Warning--no author, editor, organization, or key in cite-Moir:2009
+Warning--to sort, need author or key in cite-Moir:2009
+Warning--no key, author in AUC:2018
+Warning--no author, editor, organization, or key in AUC:2018
+Warning--to sort, need author or key in AUC:2018
+Warning--no key, author in order:2019
+Warning--no author, editor, organization, or key in order:2019
+Warning--to sort, need author or key in order:2019
+Warning--no key, author in logic:2019
+Warning--no author, editor, organization, or key in logic:2019
+Warning--to sort, need author or key in logic:2019
+Warning--no key, author in random:2019
+Warning--no author, editor, organization, or key in random:2019
+Warning--to sort, need author or key in random:2019
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Warning--no key, author in AUC:2018
+Warning--no key, author in AUC:2018
+Warning--no key, author in cite-Moir:2009
+Warning--no key, author in cite-Moir:2009
+Warning--no key, author in logic:2019
+Warning--no key, author in logic:2019
+Warning--no key, author in order:2019
+Warning--no key, author in order:2019
+Warning--no key, author in random:2019
+Warning--no key, author in random:2019
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--no key, author in cite-Moir:2009
+Warning--no author, editor, organization, or key in cite-Moir:2009
+Warning--empty author in cite-Moir:2009
+Warning--no key, author in AUC:2018
+Warning--no author, editor, organization, or key in AUC:2018
+Warning--empty author in AUC:2018
+Warning--no key, author in order:2019
+Warning--no author, editor, organization, or key in order:2019
+Warning--empty author in order:2019
+Warning--no key, author in logic:2019
+Warning--no author, editor, organization, or key in logic:2019
+Warning--empty author in logic:2019
+Warning--no key, author in random:2019
+Warning--no author, editor, organization, or key in random:2019
+Warning--empty author in random:2019
+You've used 5 entries,
+            5732 wiz_defined-function locations,
+            1308 strings with 14937 characters,
+and the built_in function-call counts, 3530 in all, are:
+= -- 295
+> -- 0
+< -- 0
++ -- 5
+- -- 0
+* -- 217
+:= -- 199
+add.period$ -- 15
+call.type$ -- 5
+change.case$ -- 20
+chr.to.int$ -- 5
+cite$ -- 65
+duplicate$ -- 421
+empty$ -- 316
+format.name$ -- 0
+if$ -- 842
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 0
+newline$ -- 95
+num.names$ -- 0
+pop$ -- 261
+preamble$ -- 1
+purify$ -- 65
+quote$ -- 0
+skip$ -- 141
+stack$ -- 0
+substring$ -- 220
+swap$ -- 25
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 150
+warning$ -- 40
+while$ -- 0
+width$ -- 0
+write$ -- 124
+(There were 45 warnings)

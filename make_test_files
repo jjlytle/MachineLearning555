@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# make a testfile.csv
+wc -l malware_train.csv
+rm testfile.csv
+rm trainfile.csv
+#echo "so a 33% train test split would be 5379655 training examples and 2649680 test examples
+head -n 1 malware_train.csv > trainfile.csv
+tail -n 5000 malware_train.csv >> trainfile.csv
+head -n 5000 malware_train.csv > testfile.csv
+
+
